@@ -39,6 +39,15 @@ foreach($server_addrs as $server_addr){
 				</tr>
 			</thead>
 		</table>
+		
+		<p>
+			Click on a row to connect to that server. Make sure you have CSCO running first otherwise it will attempt to launch it in CSGO.
+		</p>
+		<p>
+			<small>
+				Created by Cyrus. If you would like to make a contribution, please make a fork of the <a href="https://www.github.com/cyruscook/csco_browser">GitHub</a>.
+			</small>
+		</p>
 	</div>
 	
 	<script
@@ -49,6 +58,30 @@ foreach($server_addrs as $server_addr){
 	<script>
 	var alreadyRefreshed = false;
 	
+	//Cookie functions, thanks https://www.w3schools.com/js/js_cookies.asp
+	function setCookie(cname, cvalue, exdays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		var expires = "expires="+ d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+	
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for(var i = 0; i <ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+	
 	function removeExistingTable(){
 		// Remove the table if there is already one - we don't want duplicates (Thanks https://stackoverflow.com/a/19298575/7641587)
 		var existingTBody = document.getElementById("serverTBody");
@@ -57,17 +90,20 @@ foreach($server_addrs as $server_addr){
 		}
 	}
 	
+	function addLoadingMsg(){
+		//Add a loading message
+		var parentDOM = document.createElement("tbody");
+		parentDOM.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
+		
+		parentDOM.id = "serverTBody";
+		document.getElementById("serverTable").appendChild(parentDOM);
+	}
+	
 	function getTable(removeFirst){
+		console.log("Refreshing Table");
 		if(!alreadyRefreshed){
 			removeExistingTable();
-		
-			//Add a loading message
-			var parentDOM = document.createElement("tbody");
-			parentDOM.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
-			
-			parentDOM.id = "serverTBody";
-			document.getElementById("serverTable").appendChild(parentDOM);
-			
+			addLoadingMsg();
 			alreadyRefreshed = true;
 		}
 		
@@ -75,25 +111,37 @@ foreach($server_addrs as $server_addr){
 		var request = new XMLHttpRequest();
 		request.open('GET', 'https://server.cyruscook.co.uk/csco/getTable.php?addr=<?php echo(implode(",", $server_addrs)); ?>');
 		request.onreadystatechange = function() {
-			removeExistingTable();
-			
-			// When the server replies add it into the table
-			
-			// Create an element and fill it with the data
 			var data = request.responseText;
-			var parentDOM = document.createElement("tbody");
-			parentDOM.innerHTML = data;
-			
-			// Mark this data for later retrieval and add it to the table
-			parentDOM.id = "serverTBody";
-			document.getElementById("serverTable").appendChild(parentDOM);
+			if(data != ""){
+				console.log("Recieved Data from server");
+				
+				removeExistingTable();
+				
+				// When the server replies add it into the table
+				
+				// Create an element and fill it with the data
+				var parentDOM = document.createElement("tbody");
+				parentDOM.innerHTML = data;
+				
+				// Mark this data for later retrieval and add it to the table
+				parentDOM.id = "serverTBody";
+				document.getElementById("serverTable").appendChild(parentDOM);
+			}
 		}
 		request.send();
 	}
 	
 	// Fill the table with data, then set it to refresh every 30 seconds
 	getTable();
-	setInterval(getTable,30000);
+	var refreshTimer = setInterval(getTable,30000);
+	
+	function refreshTableFromButton(){
+		removeExistingTable();
+		alreadyRefreshed = false;
+		window.clearTimeout(refreshTimer);
+		getTable();
+		refreshTimer = setInterval(getTable,30000);
+	}
 	
 	<?php
 	foreach($logs as $log){
