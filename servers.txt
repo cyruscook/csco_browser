@@ -1,0 +1,4 @@
+csco.judge.se:25015
+csco.judge.se:27016
+csco.judge.se:25014
+74.91.119.52:27015
