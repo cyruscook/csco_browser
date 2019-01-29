@@ -24,7 +24,7 @@ foreach($server_addrs as $server_addr){
 <body>
 	<div class="container">
 		<h1>CSCO Servers</h1>
-		<a href="https://mega.nz/#!cSpExJrC!cfj2AIEKnmU8XkOZHqjOSKpE0RIvc2t7-mdoo1vZTJ0">Current Download Link <small>(https://mega.nz/#!cSpExJrC!cfj2AIEKnmU8XkOZHqjOSKpE0RIvc2t7-mdoo1vZTJ0)</small></a>
+		<a href="https://www.moddb.com/downloads/mirror/173822/102/0216bfab865e197b3873ab0f05daf510">Current Download Link <small>(https://www.moddb.com/downloads/mirror/173822/102/0216bfab865e197b3873ab0f05daf510)</small></a>
 		
 		<table class="table table-hover table-bordered" id="serverTable">
 			<thead>
