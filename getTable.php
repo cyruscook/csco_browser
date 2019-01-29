@@ -3,11 +3,18 @@
 	include("query.php");
 	
 	//Allow the website to request us
-	$http_origin = $_SERVER['HTTP_ORIGIN'];
+	$origin = $_SERVER['HTTP_ORIGIN'];
+	$allowed_domains = [
+		'http://www.cyruscook.co.uk',
+		'http://cyruscook.co.uk',
+		'https://www.cyruscook.co.uk',
+		'https://cyruscook.co.uk'
+	];
 	
-	if ($http_origin == "http://www.cyruscook.co.uk" || $http_origin == "http://cyruscook.co.uk" || $http_origin == "https://www.cyruscook.co.uk" || $http_origin == "https://cyruscook.co.uk")
-	{  
-		header("Access-Control-Allow-Origin: {$http_origin}");
+	if (in_array($origin, $allowed_domains)){  
+		header("Access-Control-Allow-Origin: " . $origin);
+	} else{
+		header("Access-Control-Allow-Origin: https://www.cyruscook.co.uk");
 	}
 	header("Access-Control-Allow-Methods: GET, POST");
 	header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");	
@@ -83,4 +90,7 @@
 </tr>";
 
 	}
+	
+	// Add a refresh button at the bottom
+	echo "<tr><td colspan='7' style='padding:0;'><button type='button' class='btn btn-outline-secondary' onclick='refreshTableFromButton();' style='width:100%; height: 100%;'>Refresh</button></td></tr>";
 ?>
