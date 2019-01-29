@@ -78,11 +78,16 @@
 	    if($server['pass'] == 0){
 	        $passimage = "";
 	    }
+		
+		$players = $server['players'];
+		if($_GET['showBots'] != "true"){
+			$players = $players - $server['bots'];
+		}
 	    
 		echo "<tr onclick='window.location=\"steam://connect/{$server['ip']}:{$server['port']}\"'>
 <th scope='row'>{$server['hostname']}</th>
 <td>{$server['map']}</td>
-<td>{$server['players']}/{$server['maxplayers']}</td>
+<td>{$players}/{$server['maxplayers']}</td>
 <td style='text-align: center;'>{$passimage}</td>
 <td style='text-align: center;'>{$vacimage}</td>
 <td class='status_{$server['status']}'>{$statustext}</td>
