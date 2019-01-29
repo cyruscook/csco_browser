@@ -31,7 +31,7 @@ foreach($server_addrs as $server_addr){
 				<tr>
 					<th scope="col">Name</th>
 					<th scope="col">Map</th>
-					<th scope="col">Players</th>
+					<th scope="col">Players<br><small><input type="checkbox" id="showBotsCheckbox" onclick="changeShowBots();">Bots</small></th>
 					<th scope="col">Password</th>
 					<th scope="col">VAC</th>
 					<th scope="col">Status</th>
@@ -82,6 +82,19 @@ foreach($server_addrs as $server_addr){
 		return "";
 	}
 	
+	if(getCookie("showBots") == "true"){
+		document.getElementById('showBotsCheckbox').checked = true;
+	}
+	
+	function changeShowBots(){
+		if (document.getElementById('showBotsCheckbox').checked){
+			setCookie("showBots", "true", 365);
+		} else {
+			setCookie("showBots", "false", 365);
+		}
+		refreshTableFromButton();
+	}
+	
 	function removeExistingTable(){
 		// Remove the table if there is already one - we don't want duplicates (Thanks https://stackoverflow.com/a/19298575/7641587)
 		var existingTBody = document.getElementById("serverTBody");
@@ -109,7 +122,11 @@ foreach($server_addrs as $server_addr){
 		
 		// Make request to the server to ask each game server for their current status
 		var request = new XMLHttpRequest();
-		request.open('GET', 'https://server.cyruscook.co.uk/csco/getTable.php?addr=<?php echo(implode(",", $server_addrs)); ?>');
+		var showBots = "false";
+		if(getCookie("showBots") == "true"){
+			showBots = "true";
+		}
+		request.open('GET', 'https://server.cyruscook.co.uk/csco/getTable.php?addr=<?php echo(implode(",", $server_addrs)); ?>&showBots=' + showBots);
 		request.onreadystatechange = function() {
 			var data = request.responseText;
 			if(data != ""){
