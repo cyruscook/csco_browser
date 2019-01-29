@@ -1,12 +1,14 @@
 <?php	
 
-    //Created by Cyrus Cook
-    //This file along with query.php is hosted on a server seperate from the main website so that the socket can get past the firewall.
-
 	include("query.php");
 	
 	//Allow the website to request us
-	header("Access-Control-Allow-Origin: *");
+	$http_origin = $_SERVER['HTTP_ORIGIN'];
+	
+	if ($http_origin == "http://www.cyruscook.co.uk" || $http_origin == "http://cyruscook.co.uk" || $http_origin == "https://www.cyruscook.co.uk" || $http_origin == "https://cyruscook.co.uk")
+	{  
+		header("Access-Control-Allow-Origin: {$http_origin}");
+	}
 	header("Access-Control-Allow-Methods: GET, POST");
 	header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");	
 
